@@ -1,4 +1,4 @@
-#define N 3 /* password's size */
+#define N 2 /* password's size */
 #define L N*3 /* size of all 3 passwords */
 bit init_data[L]; /* data for PrA, PrB and PrC */
 bit correct_pswd[N]; /* correct password */
@@ -32,9 +32,6 @@ proctype proc (byte my_id, next_id, previous_id;
 
         /* Part 1 sent to receiver */ 
         to_receiver! bit_sent, i%N;
-
-        /* Part 2 sent to duplicator then to receiver 
-        run duplicator(bit_sent,i%N,to_receiver);*/
 
         i++;
     /* Break since all processes have all bits */
@@ -81,19 +78,19 @@ proctype receiver (chan from_A, from_B, from_C) {
      */
 
     do
-    :: from_A?bit_received,bit_pos -> pswd[bit_pos] = bit_received;
+    :: from_A?bit_received,bit_pos ->
         do
-        :: (pass[bit_pos] == false) -> pass[bit_pos] = true; i++;
+        :: (pass[bit_pos] == false) -> pswd[bit_pos] = bit_received; pass[bit_pos] = true; i++;
         :: else -> break
         od;
-    :: from_B?bit_received,bit_pos -> pswd[bit_pos] = bit_received;
+    :: from_B?bit_received,bit_pos -> 
         do
-        :: (pass[bit_pos] == false) -> pass[bit_pos] = true; i++;
+        :: (pass[bit_pos] == false) -> pswd[bit_pos] = bit_received; pass[bit_pos] = true; i++;
         :: else -> break
         od;
-    :: from_C?bit_received,bit_pos -> pswd[bit_pos] = bit_received; 
+    :: from_C?bit_received,bit_pos ->
         do
-        :: (pass[bit_pos] == false) -> pass[bit_pos] = true; i++; 
+        :: (pass[bit_pos] == false) ->  pswd[bit_pos] = bit_received; pass[bit_pos] = true; i++; 
         :: else -> break
         od;
     :: (i == N) -> break

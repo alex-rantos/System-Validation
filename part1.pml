@@ -1,4 +1,4 @@
-#define N 3 /* password's size */
+#define N 5 /* password's size */
 #define L N*3 /* size of all 3 passwords */
 bit init_data[L]; /* data for PrA, PrB and PrC */
 bit correct_pswd[N]; /* correct password */
@@ -51,23 +51,23 @@ proctype receiver (chan from_A, from_B, from_C) {
      * 2 - mark the position you have received on bool pass[N]
      * When you have marked N different positions stop.
      */
-    
+
     do
     :: from_A?bit_received,bit_pos ->
-        if
+        do
         :: (pass[bit_pos] == false) -> pswd[bit_pos] = bit_received; pass[bit_pos] = true; i++;
         :: else -> break
-        fi;
-    :: from_B?bit_received,bit_pos ->
-        if
+        od;
+    :: from_B?bit_received,bit_pos -> 
+        do
         :: (pass[bit_pos] == false) -> pswd[bit_pos] = bit_received; pass[bit_pos] = true; i++;
         :: else -> break
-        fi;
-    :: from_C?bit_received,bit_pos -> 
-        if
-        :: (pass[bit_pos] == false) -> pswd[bit_pos] = bit_received; pass[bit_pos] = true; i++; 
+        od;
+    :: from_C?bit_received,bit_pos ->
+        do
+        :: (pass[bit_pos] == false) ->  pswd[bit_pos] = bit_received; pass[bit_pos] = true; i++; 
         :: else -> break
-        fi;
+        od;
     :: (i == N) -> break
     od
 
@@ -85,26 +85,31 @@ init {
     chan AtoB = [N] of { bit }; chan BtoC = [N] of { bit }; chan CtoA = [N] of { bit };
 
     /*
-     * Channel to send the messages to Receiver 
-     *
+     * Channel to send the messages to Receiver via 
      */
     chan AtoR = [N] of { bit,byte }; chan BtoR = [N] of { bit,byte }; chan CtoR = [N] of { bit,byte };
 
     atomic {
         /* A values*/
-        init_data[0]=1;
-        init_data[1]=0;
+        init_data[0]=1; 
+        init_data[1]=0;         
         init_data[2]=1;
+        init_data[3]=1; 
+        init_data[4]=1; 
 
         /* B values*/
-        init_data[3]=1;
-        init_data[4]=1; 
-        init_data[5]=1; 
+        init_data[5]=0; 
+        init_data[6]=1; 
+        init_data[7]=0; 
+        init_data[8]=0;  
+        init_data[9]=1; 
 
         /* C values*/
-        init_data[6]=1;
-        init_data[7]=0; 
-        init_data[8]=0; 
+        init_data[10]=0; 
+        init_data[11]=0; 
+        init_data[12]=0; 
+        init_data[13]=1;  
+        init_data[14]=0;
 
 
         byte j;
