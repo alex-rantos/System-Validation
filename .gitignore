@@ -1,9 +1,3 @@
-*.b
-*.c
-*.exe
-*.trail
-*.p
-*.h
-*.m
-*.t
-*.bat
+pan
+pan.*
+spinbat.bat
